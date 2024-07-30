@@ -1,19 +1,22 @@
-function getData() {
+function getData(url) {
   axios
-    .get("https://rickandmortyapi.com/api/character")
+    .get(url)
     .then((res) => res.data.results)
     .then((res) => {
-      console.log(res);
-      render(res, document.querySelector("#container"));
+      render(res, document.querySelector("#container"), ul);
       return res;
     })
-    .then((data) => search(data))
+    .then((data) => {
+      search(data);
+    })
     .catch();
 }
 
-getData();
+getData("https://rickandmortyapi.com/api/character");
 
-function render(array, container) {
+let fav = JSON.parse(localStorage.getItem("fav")) || [];
+
+function render(array, container, episodeContainer) {
   container.innerHTML = "";
   array.forEach((element) => {
     let div = document.createElement("div");
@@ -35,7 +38,7 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-red-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name=${element.name}></i>
       `;
       } else {
         div.innerHTML = `
@@ -46,7 +49,7 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-red-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name=${element.name}></i>
       `;
       }
       element.color = "text-red-400";
@@ -60,7 +63,7 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-green-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name='${element.name}'></i>
       `;
       } else {
         div.innerHTML = `
@@ -71,7 +74,7 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-green-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name=${element.name}></i>
       `;
       }
       element.color = "text-green-400";
@@ -85,7 +88,7 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-orange-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name=${element.name}></i>
       `;
       } else {
         div.innerHTML = `
@@ -96,17 +99,14 @@ function render(array, container) {
           </div>
           <span class="text-sm  text-orange-400">${element.status}-${element.species}</span>
         </div>
-        <i class="fa-regular fa-heart"></i>
+        <i class="fa-regular fa-heart" fav='false' name=${element.name}></i>
       `;
       }
       element.color = "text-orange-400";
     }
-    console.log(element.color);
     container.appendChild(div);
     let container2 = document.querySelector("#info1");
-    console.log(container2);
-
-    div.addEventListener("click", () => {
+    div.addEventListener("click", (e) => {
       container2.innerHTML = `
     <div class="flex mb-4" id="info1">
             <img
@@ -115,7 +115,7 @@ function render(array, container) {
               class="mr-5 rounded-xl"
             />
             <div>
-              <h2 class="text-xl mb-2">Rick Sanchez</h2>
+              <h2 class="text-xl mb-2">${element.name}</h2>
               <p class="text-sm ${element.color}">${element.status} ${element.species}</p>
               <p>Last known location: ${element.location.name}</p>
               <p class="text-sm">
@@ -123,35 +123,35 @@ function render(array, container) {
               </p>
             </div>
           </div>
-          <div>
+          <div id='ulContainer'>
             <h3 class="text-lg mb-2">List of Episodes</h3>
-            <ul>
-              <li class="flex justify-between mb-1">
-                <span>S01E01 : Pilot</span>
-                <span class="text-gray-500">December 2, 2013</span>
-              </li>
-              <li class="flex justify-between mb-1">
-                <span>S01E02 : Lawnmower Dog</span>
-                <span class="text-gray-500">December 9, 2013</span>
-              </li>
-              <li class="flex justify-between mb-1">
-                <span>S01E03 : Anatomy Park</span>
-                <span class="text-gray-500">December 16, 2013</span>
-              </li>
-              <li class="flex justify-between mb-1">
-                <span>S01E04 : M. Night Shaym-Aliens!</span>
-                <span class="text-gray-500">January 13, 2014</span>
-              </li>
-              <li class="flex justify-between mb-1">
-                <span>S01E05 : Meeseeks and Destroy</span>
-                <span class="text-gray-500">January 20, 2014</span>
-              </li>
-              <li class="flex justify-between mb-1">
-                <span>S01E06 : Rick Potion #9</span>
-                <span class="text-gray-500">January 27, 2014</span>
-              </li>
-            </ul>
           </div>`;
+      let episode = element.episode;
+      episodeContainer.innerHTML = "";
+      episode.forEach((url) => {
+        axios
+          .get(url)
+          .then(({ data }) => data)
+          .then((episodes) => {
+            let li = document.createElement("li");
+            li.classList.add("flex", "justify-between", "mb-1");
+            li.innerHTML = `
+              <span>${episodes.episode} : ${episodes.name}</span>
+              <span class="text-gray-500">${episodes.air_date}</span>`;
+            episodeContainer.appendChild(li);
+            document.getElementById("ulContainer").appendChild(ul);
+          });
+      });
+      if (e.target.classList.contains("fa-heart")) {
+        e.target.classList.toggle("text-red-600");
+        let isFav = e.target.getAttribute("fav");
+        isFav = !isFav;
+        console.log(isFav)
+        console.loge.target.getAttribute('name')
+        if (isFav) {
+          localStorage.setItem(JSON.stringify(e.target.getAttribute("nema")) , JSON.stringify(e.target.getAttribute("nema")));
+        }
+      }
     });
   });
 }
@@ -163,11 +163,10 @@ search();
 function search(data) {
   searchInput.addEventListener("input", (e) => {
     let result = data.filter((item) => {
-      console.log(
-        item.name.toLowerCase().includes(e.target.value.toLowerCase())
-      );
       return item.name.toLowerCase().includes(e.target.value.toLowerCase());
     });
     render(result, document.querySelector("#container"));
   });
 }
+
+let ul = document.getElementById("episodeContainer");
