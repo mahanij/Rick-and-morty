@@ -7,18 +7,23 @@ function getData(url) {
       return res;
     })
     .then((data) => {
-      search(data);
+      search(data, "searchBox", render, document.querySelector("#container"));
     })
     .catch();
 }
 
+let ul = document.getElementById("episodeContainer");
+
 getData("https://rickandmortyapi.com/api/character");
 
-let fav = JSON.parse(localStorage.getItem("fav")) || [];
+let favorites = [];
+
+let f = false;
 
 function render(array, container, episodeContainer) {
   container.innerHTML = "";
   array.forEach((element) => {
+    element.isFav = false;
     let div = document.createElement("div");
     div.classList.add(
       "rounded",
@@ -139,34 +144,152 @@ function render(array, container, episodeContainer) {
               <span>${episodes.episode} : ${episodes.name}</span>
               <span class="text-gray-500">${episodes.air_date}</span>`;
             episodeContainer.appendChild(li);
-            document.getElementById("ulContainer").appendChild(ul);
+            document
+              .getElementById("ulContainer")
+              .appendChild(episodeContainer);
           });
       });
       if (e.target.classList.contains("fa-heart")) {
-        e.target.classList.toggle("text-red-600");
-        let isFav = e.target.getAttribute("fav");
-        isFav = !isFav;
-        console.log(isFav)
-        console.loge.target.getAttribute('name')
-        if (isFav) {
-          localStorage.setItem(JSON.stringify(e.target.getAttribute("nema")) , JSON.stringify(e.target.getAttribute("nema")));
+        element.isFav = !element.isFav;
+        console.log(element.isFav)
+        if (element.isFav) {
+          e.target.classList.add("text-red-600");
+        } else {
+          e.target.classList.remove("text-red-600");
         }
       }
     });
   });
+  favorites = array.filter((item) => {
+    console.log(item.isFav)
+    if(item.isFav) {
+      return item
+    }
+    }
+)
 }
 
-let searchInput = document.getElementById("searchBox");
-
-search();
-
-function search(data) {
+function search(data, id, callBack, container) {
+  let searchInput = document.getElementById(id);
   searchInput.addEventListener("input", (e) => {
     let result = data.filter((item) => {
       return item.name.toLowerCase().includes(e.target.value.toLowerCase());
     });
-    render(result, document.querySelector("#container"));
+    if (callBack != favRener2) {
+      callBack(result, container);
+    } else {
+      console.log(result);
+      callBack(result);
+    }
   });
 }
 
-let ul = document.getElementById("episodeContainer");
+function favRener() {
+  let favList = document.getElementById("hidden");
+  document.getElementById("closeFavList").addEventListener("click", () => {
+    console.log("click");
+    favList.classList.add("hidden");
+  });
+  document.getElementById("heart").addEventListener("click", (e) => {
+    let favContainer = document.getElementById("favContainer");
+    favContainer.innerHTML = "";
+    favList.classList.remove("hidden");
+    favorites.forEach((item) => {
+      let div = document.createElement("div");
+      div.classList.add(
+        "rounded",
+        "my-2",
+        "items-center",
+        "bg-gray-800",
+        "p-2",
+        "flex"
+      );
+      if (item.isFav) {
+        if (item.status == "Dead") {
+          if (item.gender == "Male") {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👨  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-red-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart text-red-600" fav='false' name=${item.name}></i>
+          `;
+          } else {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👩  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-red-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart text-red-600" fav='false' name=${item.name}></i>
+          `;
+          }
+          item.color = "text-red-400";
+        } else if (item.status == "Alive") {
+          if (item.gender == "Male") {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👨  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-green-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart text-red-600" fav='false' name='${item.name}'></i>
+          `;
+          } else {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👩  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-green-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart" fav='false' name=${item.name}></i>
+          `;
+          }
+          item.color = "text-green-400";
+        } else {
+          if (item.gender == "Male") {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👨  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-orange-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart" fav='false' name=${item.name}></i>
+          `;
+          } else {
+            div.innerHTML = `
+            <img src = "${item.image}" class = 'flex w-10 h-10 mr-5 rounded-lg'>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <span>👩  ${item.name}</span>                      
+              </div>
+              <span class="text-sm  text-orange-400">${item.status}-${item.species}</span>
+            </div>
+            <i class="fa-regular fa-heart" fav='false' name=${item.name}></i>
+          `;
+          }
+          item.color = "text-orange-400";
+        }
+        console.log(favorites)
+        favContainer.appendChild(div);
+      }
+    });
+    console.log(favorites)
+    search(favorites, "searchBox2", favRener2, favContainer);
+  });
+}
+
+favRener();
+
+function favRener2(data) {}

@@ -596,6 +596,22 @@ video {
   right: 0px;
 }
 
+.top-0 {
+  top: 0px;
+}
+
+.z-10 {
+  z-index: 10;
+}
+
+.z-20 {
+  z-index: 20;
+}
+
+.z-30 {
+  z-index: 30;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -621,24 +637,68 @@ video {
   margin-right: 1.25rem;
 }
 
-.mb-1 {
-  margin-bottom: 0.25rem;
+.mt-10 {
+  margin-top: 2.5rem;
 }
 
-.mb-5 {
-  margin-bottom: 1.25rem;
+.mt-\[80px\] {
+  margin-top: 80px;
 }
 
 .flex {
   display: flex;
 }
 
-.h-\[100\] {
-  height: 100;
+.hidden {
+  display: none;
+}
+
+.h-7 {
+  height: 1.75rem;
 }
 
 .h-\[100vh\] {
   height: 100vh;
+}
+
+.h-\[100\] {
+  height: 100;
+}
+
+.h-\[80\] {
+  height: 80;
+}
+
+.h-\[80vh\] {
+  height: 80vh;
+}
+
+.h-\[90vh\] {
+  height: 90vh;
+}
+
+.h-5 {
+  height: 1.25rem;
+}
+
+.h-10 {
+  height: 2.5rem;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.max-h-\[90vh\] {
+  max-height: 90vh;
+}
+
+.min-h-\[90vh\] {
+  min-height: 90vh;
 }
 
 .w-1\/3 {
@@ -649,6 +709,62 @@ video {
   width: 66.666667%;
 }
 
+.w-\[100wh\] {
+  width: 100wh;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.w-\[100vh\] {
+  width: 100vh;
+}
+
+.w-\[200vh\] {
+  width: 200vh;
+}
+
+.w-\[\] {
+  width: ;
+}
+
+.w-\[90\] {
+  width: 90;
+}
+
+.w-\[90\%\] {
+  width: 90%;
+}
+
+.w-\[95\%\] {
+  width: 95%;
+}
+
+.w-\[95\] {
+  width: 95;
+}
+
+.w-\[5\%\] {
+  width: 5%;
+}
+
+.w-10 {
+  width: 2.5rem;
+}
+
+.w-20 {
+  width: 5rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
 .items-center {
   align-items: center;
 }
@@ -657,8 +773,8 @@ video {
   justify-content: space-between;
 }
 
-.overflow-scroll {
-  overflow: scroll;
+.divide-none > :not([hidden]) ~ :not([hidden]) {
+  border-style: none;
 }
 
 .overflow-y-scroll {
@@ -669,8 +785,21 @@ video {
   border-radius: 0.25rem;
 }
 
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
 .rounded-xl {
   border-radius: 0.75rem;
+}
+
+.rounded-l {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.border {
+  border-width: 1px;
 }
 
 .bg-gray-800 {
@@ -683,8 +812,51 @@ video {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity));
 }
 
+.bg-gray-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+}
+
+.bg-gray-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.bg-gray-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 7 18 / var(--tw-bg-opacity));
+}
+
+.bg-blue-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 37 84 / var(--tw-bg-opacity));
+}
+
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.bg-gray-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
+}
+
+.bg-red-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
 .p-8 {
   padding: 2rem;
+}
+
+.p-5 {
+  padding: 1.25rem;
 }
 
 .px-20 {
@@ -702,8 +874,13 @@ video {
   padding-bottom: 0.5rem;
 }
 
-.pb-5 {
-  padding-bottom: 1.25rem;
+.text-center {
+  text-align: center;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .text-sm {
@@ -716,9 +893,8 @@ video {
   line-height: 1.75rem;
 }
 
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+.font-light {
+  font-weight: 300;
 }
 
 .text-green-400 {
@@ -736,7 +912,68 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-gray-500 {
+.text-red-700 {
   --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity));
+  color: rgb(185 28 28 / var(--tw-text-opacity));
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-red-100 {
+  --tw-text-opacity: 1;
+  color: rgb(254 226 226 / var(--tw-text-opacity));
+}
+
+.text-red-200 {
+  --tw-text-opacity: 1;
+  color: rgb(254 202 202 / var(--tw-text-opacity));
+}
+
+.opacity-30 {
+  opacity: 0.3;
+}
+
+.opacity-90 {
+  opacity: 0.9;
+}
+
+.opacity-\[\] {
+  opacity: ;
+}
+
+.opacity-\[99\] {
+  opacity: 99;
+}
+
+.opacity-\[99\%\] {
+  opacity: 99%;
+}
+
+.opacity-\[90\%\] {
+  opacity: 90%;
+}
+
+.opacity-\[95\%\] {
+  opacity: 95%;
+}
+
+.opacity-\[9\%\] {
+  opacity: 9%;
+}
+
+.opacity-\[97\%\] {
+  opacity: 97%;
+}
+
+.opacity-\[98\%\] {
+  opacity: 98%;
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
