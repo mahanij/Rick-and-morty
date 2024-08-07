@@ -1,39 +1,31 @@
 function getData(url) {
+  const container = document.querySelector("#container");
+  container.innerHTML = "<p>...loading</p>";
   axios
     .get(url)
     .then((res) => res.data.results)
     .then((res) => {
-      render(res, document.querySelector("#container"), ul);
+      render(res, container);
+      search(res, "searchBox", render, container);
       return res;
     })
-    .then((data) => {
-      search(data, "searchBox", render, document.querySelector("#container"));
-      return data;
-    })
-    .then((data) => localStorage(data))
-    .then((data) => {
-      if (data != undefined) {
-        render(data, document.querySelector("#container"), ul);
-      }
-    })
-    .catch((err) => {
-      console.error("Error fetching data:", err);
+    .then((data) => removeAndAdd(data , container))
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      container.innerHTML = "<p>...loading</p>";
     });
 }
 
-let ul = document.getElementById("episodeContainer");
-
 getData("https://rickandmortyapi.com/api/character");
 
-let favorites = JSON.parse(localStorage.getItem("fav")) || [];
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-function render(array, container, episodeContainer) {
+console.log(favorites);
+
+function render(array, container) {
   container.innerHTML = "";
   array.forEach((element) => {
-    if (element.isFav) {
-      document.getElementById("fa-heart").classList.add("text-red-600");
-    }
-    element.isFav = false;
+    save(array);
     let div = document.createElement("div");
     div.classList.add(
       "rounded",
@@ -43,73 +35,53 @@ function render(array, container, episodeContainer) {
       "p-2",
       "flex"
     );
-    let genderIcon = element.gender == "Male" ? "👨" : "👩";
-    let statusColor =
-      element.status == "Dead"
-        ? "text-red-400"
-        : element.status == "Alive"
-        ? "text-green-400"
-        : "text-orange-400";
     div.innerHTML = `
       <img src="${element.image}" class="flex w-10 h-10 mr-5 rounded-lg">
       <div class="flex-1">
         <div class="flex justify-between items-center">
-          <span>${genderIcon} ${element.name}</span>                      
+          <span>${gender(element.gender)}  ${element.name}</span>
         </div>
-        <span class="text-sm ${statusColor}">${element.status}-${element.species}</span>
+        <span class="text-sm ${color(element.status)}">${element.status} - ${
+      element.species
+    }</span>
       </div>
-      <i class="fa-regular fa-heart" fav="false" name="${element.name}"></i>
+      <i class="fa-regular fa-heart ${heartColor(element.isFav)}"></i>
     `;
-    element.color = statusColor;
     container.appendChild(div);
-    if (array != favorites) {
-      div.addEventListener("click", (e) => {
-        if (e.target.classList.contains("fa-heart")) {
-          toggleFavorite(element, e.target);
-        } else {
-          displayCharacterInfo(element, episodeContainer);
-        }
-      });
-    }
+
+    div.addEventListener("click", (e) => {
+      if (e.target.classList.contains("fa-heart")) {
+        toggleFavorite(element, e.target);
+      } else {
+        showDetails(element);
+      }
+    });
   });
 }
 
-function toggleFavorite(element, icon) {
-  element.isFav = !element.isFav;
-  if (element.isFav) {
-    icon.classList.add("text-red-600");
-    favorites.push(element);
-  } else {
-    icon.classList.remove("text-red-600");
-    favorites = favorites.filter((fav) => fav.name !== element.name);
-  }
-}
-
-function displayCharacterInfo(element, episodeContainer) {
+function showDetails(element) {
   let container2 = document.querySelector("#info1");
   container2.innerHTML = `
-    <div class="flex mb-4" id="info1">
-      <img
-        src=${element.image}
-        alt=""
-        class="mr-5 rounded-xl"
-      />
+    <div class="flex mb-4">
+      <img src="${element.image}" alt="" class="mr-5 rounded-xl"/>
       <div>
         <h2 class="text-xl mb-2">${element.name}</h2>
-        <p class="text-sm ${element.color}">${element.status} ${element.species}</p>
+        <p class="text-sm ${color(element.status)}">${element.status} ${
+    element.species
+  }</p>
         <p>Last known location: ${element.location.name}</p>
-        <p class="text-sm">
-          This character is already in your favourites.
-        </p>
       </div>
     </div>
     <div id="ulContainer">
-      <h3 class="text-lg mb-2">List of Episodes</h3>
-    </div>`;
+      <h3 class="text-lg mb-2">List of episodes</h3>
+      <ul id="episodeContainer"></ul>
+    </div>
+  `;
 
-  episodeContainer.innerHTML = "";
-
-  element.episode.forEach((url) => {
+  let episode = element.episode;
+  let ul = document.getElementById("episodeContainer");
+  ul.innerHTML = "";
+  episode.forEach((url) => {
     axios
       .get(url)
       .then(({ data }) => {
@@ -117,36 +89,36 @@ function displayCharacterInfo(element, episodeContainer) {
         li.classList.add("flex", "justify-between", "mb-1");
         li.innerHTML = `
           <span>${data.episode} : ${data.name}</span>
-          <span class="text-gray-500">${data.air_date}</span>`;
-        episodeContainer.appendChild(li);
-        document.getElementById("ulContainer").appendChild(episodeContainer);
+          <span class="text-gray-500">${data.air_date}</span>
+        `;
+        ul.appendChild(li);
       })
-      .catch((err) => {
-        console.error("Error fetching episode data:", err);
+      .catch((error) => {
+        console.error("Error fetching episode data:", error);
       });
   });
 }
 
-// Debounce function to optimize search
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
+function toggleFavorite(element, heartIcon) {
+  element.isFav = !element.isFav;
+  if (element.isFav) {
+    heartIcon.classList.add("text-red-600");
+    favorites.push(element);
+  } else {
+    heartIcon.classList.remove("text-red-600");
+    favorites = favorites.filter((item) => item.id !== element.id);
+  }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
 }
 
 function search(data, id, callBack, container) {
   let searchInput = document.getElementById(id);
-  searchInput.addEventListener(
-    "input",
-    debounce((e) => {
-      let result = data.filter((item) =>
-        item.name.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      callBack(result, container);
-    }, 300)
-  );
+  searchInput.addEventListener("input", (e) => {
+    let result = data.filter((item) =>
+      item.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    callBack(result, container);
+  });
 }
 
 function favRener() {
@@ -155,33 +127,80 @@ function favRener() {
     favList.classList.add("hidden");
   });
   document.getElementById("heart").addEventListener("click", () => {
-    let favContainer = document.getElementById("favContainer");
-    favContainer.innerHTML = "";
+    favRener2(favorites);
     favList.classList.remove("hidden");
-    render(favorites, favContainer, ul);
-    search(favorites, "searchBox2", favRener2, favContainer);
+  });
+}
+
+function favRener2(data) {
+  let favContainer = document.getElementById("favContainer");
+  favContainer.innerHTML = "";
+  data.forEach((item) => {
+    let div = document.createElement("div");
+    div.classList.add(
+      "rounded",
+      "my-2",
+      "items-center",
+      "bg-gray-800",
+      "p-2",
+      "flex"
+    );
+    div.innerHTML = `
+      <img src="${item.image}" class="flex w-10 h-10 mr-5 rounded-lg">
+      <div class="flex-1">
+        <div class="flex justify-between items-center">
+          <span>${gender(item.gender)}  ${item.name}</span>
+        </div>
+        <span class="text-sm ${color(item.status)}">${item.status} - ${
+      item.species
+    }</span>
+      </div>
+      <i class="fa-regular fa-heart text-red-600"></i>
+    `;
+    favContainer.appendChild(div);
   });
 }
 
 favRener();
 
-function favRener2(data) {
-  let favContainer = document.getElementById("favContainer");
-  favContainer.innerHTML = "";
-  render(data, favContainer, ul);
+function gender(gender) {
+  return gender === "Male" ? "👨" : "👩";
 }
 
-function localStorage(data) {
-  if (localStorage.getItem("fav") != undefined) {
-    data.forEach((value) => {
-      favorites.forEach((item) => {
-        if (item.isFav) {
-          value.isFav = item.isFav;
-        }
-      });
-    });
-    return data;
+function color(status) {
+  if (status === "Alive") {
+    return "text-green-600";
+  } else if (status === "Dead") {
+    return "text-red-600";
   } else {
-    return undefined;
+    return "text-orange-600";
   }
+}
+
+function heartColor(isFav) {
+  return isFav ? "text-red-600" : "text-white";
+}
+
+function save(array) {
+  array.forEach((element) => {
+    favorites.forEach((item) => {
+      if (element.id === item.id) {
+        element.isFav = item.isFav;
+      }
+    });
+  });
+}
+
+function removeAndAdd(data , container) {
+  let RAA = document.getElementById("add");
+  RAA.addEventListener("click", () => {
+    favorites = [];
+    console.log(favorites);
+    data.forEach((item) => {
+      item.isFav = true;
+      favorites.push(item);
+      favRener2(favorites);
+      render(data , container)
+    });
+  });
 }

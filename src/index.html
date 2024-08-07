@@ -32,12 +32,17 @@
         <i class="fa-regular fa-heart text-red-600" id="heart"></i>
       </nav>
       <div
-        class="h hidden w-[95%] bg-gray-950 min-h-[90vh] rounded transition-all fixed z-30 opacity-[99%] p-5 flex-col"
+        class="hidden w-[95%] bg-gray-950 h-auto rounded transition-all fixed z-30 opacity-[99%] p-5 flex-col overflow-scroll"
         id="hidden"
       >
         <div class="flex justify-between w-full items-start">
           <i class="fa-xmark fa-solid text-red-100" id="closeFavList"></i>
-          <input type="text" class="w-30 h-8 rounded text-black bg-gray-100" id="searchBox2"/>
+          <button
+            class="flex w-40 h-8 rounded-[5px] bg-gray-700 justify-center items-center"
+            id="add"
+          >
+            add all to favourites
+          </button>
           <h2>
             favourites list <i class="fa-regular fa-heart text-red-600"></i>
           </h2>
@@ -60,11 +65,8 @@
             />
             <div>
               <h2 class="text-xl mb-2">Rick Sanchez</h2>
-              <p class="text-sm text-green-400">Alive Human</p>
+              <p class="text-sm text-green-600">Alive Human</p>
               <p>Last known location: Citadel of Ricks</p>
-              <p class="text-sm">
-                this character already is in your favourites
-              </p>
             </div>
           </div>
           <div class="mt-10">
